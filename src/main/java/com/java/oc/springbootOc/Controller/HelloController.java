@@ -13,6 +13,6 @@ public class HelloController {
 
     @PostMapping("/echo")
     public String echoMessage(@RequestBody String message) {
-        return "Received: " + message;
+        return "Received:>>> " + message;
     }
 }
