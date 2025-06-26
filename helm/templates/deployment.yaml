@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "springboot-ocdemo.fullname" . }}
+  labels:
+    {{- include "springboot-ocdemo.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount | default 1 }}
+  selector:
+    matchLabels:
+      app: {{ include "springboot-ocdemo.name" . }}
+  template:
+    metadata:
+      labels:
+        app: {{ include "springboot-ocdemo.name" . }}
+    spec:
+      containers:
+        - name: {{ include "springboot-ocdemo.name" . }}
+          image: >-
+            {{ if .Values.deployment.enabled }}
+              {{ include "springboot-ocdemo.fullname" . }}:latest
+            {{ else }}
+              {{ .Values.image.repository }}:{{ .Values.image.tag }}
+            {{ end }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - containerPort: {{ .Values.service.port }}
+          livenessProbe:
+            {{- toYaml .Values.livenessProbe | nindent 12 }}
+          readinessProbe:
+            {{- toYaml .Values.readinessProbe | nindent 12 }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
