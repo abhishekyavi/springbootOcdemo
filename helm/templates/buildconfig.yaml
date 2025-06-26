@@ -10,15 +10,17 @@ spec:
     git:
       uri: {{ .Values.build.git.uri | quote }}
       ref: {{ .Values.build.git.ref | quote }}
+  triggers:
+    - type: ConfigChange
+    - type: ImageChange
   strategy:
     type: {{ .Values.build.strategy }}
     sourceStrategy:
       from:
         kind: ImageStreamTag
-        name: java:11
+        name: java:latest
         namespace: openshift
   output:
     to:
       kind: ImageStreamTag
       name: {{ .Values.build.outputImageStream | quote }}
- 
